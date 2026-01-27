@@ -12,6 +12,8 @@ public class Produit {
 	public int getId_produit() {
 		return id_produit;
 	}
+	
+	//commentaire
 	public void setId_produit(int id_produit) {
 		this.id_produit = id_produit;
 	}
