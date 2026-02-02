@@ -6,18 +6,24 @@ import exception.OperationInvalide;
 import exception.ChampInvalide;
 import model.Categorie;
 import model.Model;
-import service.Service;
+import service.Ajouter;
+import service.LierDelier;
 
+import service.Supprimer;
+import service.Modifier;
 
 public class mainMVC {
 
     public static void main(String[] args) throws Exception {
 
         Model model = new Model();
-        Service service = new Service(model);
-   
+     
+        Supprimer supprimer = new Supprimer(model);
+        Ajouter ajouter = new Ajouter(model);
+        LierDelier lierDelier = new LierDelier(model);
+        Modifier modifier = new Modifier(model);
 
-        service.chargerDonnees();
+     
         
          
         
@@ -31,13 +37,13 @@ public class mainMVC {
 
         if (choixSupprimer == 1) {
         	
-            supprProduit(sc, service);
+            supprProduit(sc, supprimer);
             
         }
         else if (choixSupprimer == 2) {
         	
         	
-        	supprCateg(sc, service);
+        	supprCateg(sc, supprimer);
             
         }
         
@@ -51,12 +57,12 @@ public class mainMVC {
         if (choixAjout == 1) {
         	
         	
-        	creationProduit(sc, service);
+        	creationProduit(sc, ajouter);
            
        }
 
         else if (choixAjout == 2) {
-        	creationCateg(sc, service);
+        	creationCateg(sc, ajouter);
         }
 
         
@@ -69,12 +75,12 @@ public class mainMVC {
         
         
         if (choixMaj == 1) {
-        	modifCateg(sc,service);
+        	modifCateg(sc,modifier);
         	
         }
         
         else if (choixMaj == 2) {
-        	modifProduit(sc,service);
+        	modifProduit(sc,modifier);
         }
         
         
@@ -84,12 +90,12 @@ public class mainMVC {
         sc.nextLine();
         
         if (choixLierDelier == 1) {
-        	delierLierCateg(sc, service);
+        	delierLierCateg(sc, lierDelier);
         	
         }
         
         if (choixLierDelier == 2) {
-        	delierLierProduit(sc, service);
+        	delierLierProduit(sc, lierDelier);
         	
         	
         }
@@ -101,7 +107,7 @@ public class mainMVC {
     
     
     // recusrvité lier/delier categ
-    public static void delierLierCateg(Scanner sc, Service service) throws SQLException {
+    public static void delierLierCateg(Scanner sc, LierDelier lierDelier) throws SQLException {
     	System.out.println("Identifiant de la categorie : ");
     	int id_categ = sc.nextInt();
     	sc.nextLine();
@@ -112,15 +118,15 @@ public class mainMVC {
     	sc.nextLine();
     	
     	try {
-    		service.lierDelierCategorie(id_categ, id_parent);
+    		lierDelier.lierDelierCategorie(id_categ, id_parent);
     	}catch(OperationInvalide e) {
     		System.out.println(e.getMessage());
-			delierLierCateg(sc, service);
+			delierLierCateg(sc, lierDelier);
     	}
     }
     
     // recusrvité lier/delier produit
-    public static void delierLierProduit(Scanner sc, Service service) throws SQLException {
+    public static void delierLierProduit(Scanner sc, LierDelier lierDelier) throws SQLException {
     	System.out.println("Identifiant du produit : ");
     	int id_produit = sc.nextInt();
     	sc.nextLine();
@@ -130,10 +136,10 @@ public class mainMVC {
     	sc.nextLine();
     	
     	try {
-    		service.lierDelierProduit(id_produit, id_categ); 
+    		lierDelier.lierDelierProduit(id_produit, id_categ); 
     	}catch(OperationInvalide e) {
     		System.out.println(e.getMessage());
-    		delierLierProduit(sc, service);
+    		delierLierProduit(sc, lierDelier);
     	}
     }
     
@@ -143,7 +149,7 @@ public class mainMVC {
     
     
     // Recusrvisite pr modif categ 
-    public static void modifCateg(Scanner sc, Service service) throws SQLException {
+    public static void modifCateg(Scanner sc, Modifier modifier) throws SQLException {
     	System.out.println("Identifiant de la categorie : ");
     	int id_categ = sc.nextInt();
     	 sc.nextLine();
@@ -155,17 +161,17 @@ public class mainMVC {
     	String description = sc.nextLine(); 
     	
     	try {
-    		service.modifierCategorie( id_categ,  nom,  description, null);
+    		modifier.modifierCategorie( id_categ,  nom,  description, null);
     	}
     	catch(ChampInvalide e) {
     		System.out.println(e.getMessage());
-			modifCateg(sc, service);
+			modifCateg(sc, modifier);
     	}
     }
     
     
     // Recursivité pr modif produit
-    public static void modifProduit(Scanner sc , Service service) throws SQLException {
+    public static void modifProduit(Scanner sc , Modifier modifier) throws SQLException {
     	System.out.println("Identifiant du produit : ");
     	int id_produit = sc.nextInt();
     	sc.nextLine();
@@ -187,10 +193,10 @@ public class mainMVC {
     	
     	
     	try {
-    		service.modifierProduit(id_produit, nom, prix, qtt_stock, id_categ);
+    		modifier.modifierProduit(id_produit, nom, prix, qtt_stock, id_categ);
        }catch (ChampInvalide e) {
     	   System.out.println(e.getMessage());
-    	   modifProduit(sc, service);
+    	   modifProduit(sc, modifier);
        }
      }
     
@@ -201,7 +207,7 @@ public class mainMVC {
     
     // Recusrvitié pour ajt de categ
     
-    public static void creationCateg(Scanner sc, Service service) throws SQLException {
+    public static void creationCateg(Scanner sc, Ajouter ajouter) throws SQLException {
     	int id_categ = 0;
 
         System.out.println("Nom de categorie :");
@@ -214,17 +220,17 @@ public class mainMVC {
         int id_parent = sc.nextInt();
         sc.nextLine();
         try {
-        	service.ajouterCategorie(nom, description, id_parent);
+        	ajouter.ajouterCategorie(nom, description, id_parent);
         }catch(ChampInvalide e) {
         	System.out.println(e.getMessage());
-        	creationCateg(sc, service);
+        	creationCateg(sc, ajouter);
         }
     }
     
     
     
     // Recursivité pour l'ajt de produit  = la methode s'appelle elle meme 
-    public static void creationProduit(Scanner sc, Service service) throws SQLException {
+    public static void creationProduit(Scanner sc, Ajouter ajouter) throws SQLException {
     	 System.out.println("Nom du produit :");
          String nom = sc.nextLine();
          
@@ -240,11 +246,11 @@ public class mainMVC {
          sc.nextLine();
          
          try {
-			service.ajouterProduit(nom, prix, qtt, id_categ);
+			ajouter.ajouterProduit(nom, prix, qtt, id_categ);
 
 		} catch (ChampInvalide e) {
 			System.out.println(e.getMessage());
-			creationProduit(sc, service);
+			creationProduit(sc, ajouter);
 		}
     }
     
@@ -253,22 +259,22 @@ public class mainMVC {
     
     
     // Recursivité sur la suppression produit
-    public static void supprProduit(Scanner sc, Service service) throws SQLException {
+    public static void supprProduit(Scanner sc, Supprimer supprimer) throws SQLException {
     	System.out.println("Identifiant du produit :");
         int id = sc.nextInt();
         sc.nextLine();
         
         try {
-        	service.supprimerProduit(id);
+        	supprimer.supprimerProduit(id);
         }catch (ChampInvalide e) {
         	System.out.println(e.getMessage());
-        	supprProduit(sc, service);
+        	supprProduit(sc, supprimer);
         }
     	
     }
     
     // Recursivité sur la suppresion categ
-    public static void supprCateg(Scanner sc, Service service) throws SQLException, OperationInvalide, ChampInvalide {
+    public static void supprCateg(Scanner sc, Supprimer supprimer) throws SQLException, OperationInvalide, ChampInvalide {
     	
     	System.out.println("Identifiant de la categorie :");
         int id = sc.nextInt();
@@ -276,11 +282,11 @@ public class mainMVC {
         
         
         try {
-			service.supprimerCategorie(id);
+			supprimer.supprimerCategorie(id);
 
 		} catch (ChampInvalide | OperationInvalide e) {
 			System.out.println(e.getMessage());
-			supprCateg(sc, service);
+			supprCateg(sc, supprimer);
 		}
    }
 }
