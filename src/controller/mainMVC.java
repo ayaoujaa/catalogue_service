@@ -1,9 +1,13 @@
 package controller;
 
+import java.sql.SQLException;
 import java.util.Scanner;
-
+import exception.OperationInvalide;
+import exception.ChampInvalide;
+import model.Categorie;
 import model.Model;
 import service.Service;
+
 
 public class mainMVC {
 
@@ -11,10 +15,11 @@ public class mainMVC {
 
         Model model = new Model();
         Service service = new Service(model);
+   
 
         service.chargerDonnees();
         
-        
+         
         
         // DMD DE SUPPRESSION
         
@@ -25,16 +30,15 @@ public class mainMVC {
         sc.nextLine(); 
 
         if (choixSupprimer == 1) {
-            System.out.println("Identifiant du produit :");
-            int id = sc.nextInt();
-            sc.nextLine();
-            service.supprimerProduit(id);
+        	
+            supprProduit(sc, service);
+            
         }
         else if (choixSupprimer == 2) {
-            System.out.println("Identifiant de la categorie :");
-            int id = sc.nextInt();
-            sc.nextLine();
-            service.supprimerCategorie(id);
+        	
+        	
+        	supprCateg(sc, service);
+            
         }
         
         
@@ -45,36 +49,14 @@ public class mainMVC {
         sc.nextLine();
 
         if (choixAjout == 1) {
-
-            System.out.println("Nom du produit :");
-            String nom = sc.nextLine();
-
-            System.out.println("Prix :");
-            float prix = sc.nextFloat();
-
-            System.out.println("Quantité en stock :");
-            int qtt = sc.nextInt();
-
-            System.out.println("Id de la categorie :");
-            int id_categ = sc.nextInt();
-            sc.nextLine();
-
-            service.ajouterProduit(nom, prix, qtt, id_categ);
-        }
+        	
+        	
+        	creationProduit(sc, service);
+           
+       }
 
         else if (choixAjout == 2) {
-
-            System.out.println("Nom de categorie :");
-            String nom = sc.nextLine();
-
-            System.out.println("Description :");
-            String description = sc.nextLine();
-
-            System.out.println("Id de la categorie :");
-            int id_parent = sc.nextInt();
-            sc.nextLine();
-
-            service.ajouterCategorie(nom, description, id_parent);
+        	creationCateg(sc, service);
         }
 
         
@@ -87,42 +69,12 @@ public class mainMVC {
         
         
         if (choixMaj == 1) {
-        	System.out.println("Identifiant de la categorie : ");
-        	int id_categ = sc.nextInt();
-        	 sc.nextLine();
-        	
-        	System.out.println("Nom : ");
-        	String nom = sc.nextLine();
-        	
-        	System.out.println("Description : ");
-        	String description = sc.nextLine();
-        	
-    
-        	service.modifierCategorie( id_categ,  nom,  description, null);
+        	modifCateg(sc,service);
         	
         }
         
         else if (choixMaj == 2) {
-        	System.out.println("Identifiant du produit : ");
-        	int id_produit = sc.nextInt();
-        	sc.nextLine();
-        	
-        	System.out.println("Nom : ");
-        	String nom = sc.nextLine();
-        	
-        	System.out.println("Prix : ");
-        	float prix = sc.nextFloat();
-        	sc.nextLine();
-        	
-        	System.out.println("Quantité de stock : ");
-        	int qtt_stock = sc.nextInt();
-        	sc.nextLine();
-        	
-        	System.out.println("Identifiant de la categorie : ");
-        	int id_categ = sc.nextInt();
-        	sc.nextLine();
-        	
-        	service.modifierProduit(id_produit, nom, prix, qtt_stock, id_categ);
+        	modifProduit(sc,service);
         }
         
         
@@ -132,37 +84,204 @@ public class mainMVC {
         sc.nextLine();
         
         if (choixLierDelier == 1) {
-        	System.out.println("Identifiant de la categorie : ");
-        	int id_categ = sc.nextInt();
-        	sc.nextLine();
-        	
-        	
-        	System.out.println("Identifiant du parent de la catégorie : ");
-        	int id_parent = sc.nextInt();
-        	sc.nextLine();
-        	
-        	
-        	service.lierDelierCategorie(id_categ, id_parent);
+        	delierLierCateg(sc, service);
         	
         }
         
         if (choixLierDelier == 2) {
-        	System.out.println("Identifiant du produit : ");
-        	int id_produit = sc.nextInt();
-        	sc.nextLine();
-        	
-        	System.out.println("Identifiant de la categorie liée : ");
-        	int id_categ = sc.nextInt();
-        	sc.nextLine();
-        	
-        	service.lierDelierProduit(id_produit, id_categ); 
+        	delierLierProduit(sc, service);
         	
         	
         }
         
-        
-        
-        
+    
     }
+    
+    
+    
+    
+    // recusrvité lier/delier categ
+    public static void delierLierCateg(Scanner sc, Service service) throws SQLException {
+    	System.out.println("Identifiant de la categorie : ");
+    	int id_categ = sc.nextInt();
+    	sc.nextLine();
+    	
+    	
+    	System.out.println("Identifiant du parent de la catégorie : ");
+    	int id_parent = sc.nextInt();
+    	sc.nextLine();
+    	
+    	try {
+    		service.lierDelierCategorie(id_categ, id_parent);
+    	}catch(OperationInvalide e) {
+    		System.out.println(e.getMessage());
+			delierLierCateg(sc, service);
+    	}
+    }
+    
+    // recusrvité lier/delier produit
+    public static void delierLierProduit(Scanner sc, Service service) throws SQLException {
+    	System.out.println("Identifiant du produit : ");
+    	int id_produit = sc.nextInt();
+    	sc.nextLine();
+    	
+    	System.out.println("Identifiant de la categorie liée : ");
+    	int id_categ = sc.nextInt();
+    	sc.nextLine();
+    	
+    	try {
+    		service.lierDelierProduit(id_produit, id_categ); 
+    	}catch(OperationInvalide e) {
+    		System.out.println(e.getMessage());
+    		delierLierProduit(sc, service);
+    	}
+    }
+    
+    
+    
+    
+    
+    
+    // Recusrvisite pr modif categ 
+    public static void modifCateg(Scanner sc, Service service) throws SQLException {
+    	System.out.println("Identifiant de la categorie : ");
+    	int id_categ = sc.nextInt();
+    	 sc.nextLine();
+    	
+    	System.out.println("Nom : ");
+    	String nom = sc.nextLine();
+    	
+    	System.out.println("Description : ");
+    	String description = sc.nextLine(); 
+    	
+    	try {
+    		service.modifierCategorie( id_categ,  nom,  description, null);
+    	}
+    	catch(ChampInvalide e) {
+    		System.out.println(e.getMessage());
+			modifCateg(sc, service);
+    	}
+    }
+    
+    
+    // Recursivité pr modif produit
+    public static void modifProduit(Scanner sc , Service service) throws SQLException {
+    	System.out.println("Identifiant du produit : ");
+    	int id_produit = sc.nextInt();
+    	sc.nextLine();
+    	
+    	System.out.println("Nom : ");
+    	String nom = sc.nextLine();
+    	
+    	System.out.println("Prix : ");
+    	float prix = sc.nextFloat();
+    	sc.nextLine();
+    	
+    	System.out.println("Quantité de stock : ");
+    	int qtt_stock = sc.nextInt();
+    	sc.nextLine();
+    	
+    	System.out.println("Identifiant de la categorie : ");
+    	int id_categ = sc.nextInt();
+    	sc.nextLine();
+    	
+    	
+    	try {
+    		service.modifierProduit(id_produit, nom, prix, qtt_stock, id_categ);
+       }catch (ChampInvalide e) {
+    	   System.out.println(e.getMessage());
+    	   modifProduit(sc, service);
+       }
+     }
+    
+    
+    
+    
+    
+    
+    // Recusrvitié pour ajt de categ
+    
+    public static void creationCateg(Scanner sc, Service service) throws SQLException {
+    	int id_categ = 0;
+
+        System.out.println("Nom de categorie :");
+        String nom = sc.nextLine();
+
+        System.out.println("Description :");
+        String description = sc.nextLine();
+
+        System.out.println("Id de la categorie parente :");
+        int id_parent = sc.nextInt();
+        sc.nextLine();
+        try {
+        	service.ajouterCategorie(nom, description, id_parent);
+        }catch(ChampInvalide e) {
+        	System.out.println(e.getMessage());
+        	creationCateg(sc, service);
+        }
+    }
+    
+    
+    
+    // Recursivité pour l'ajt de produit  = la methode s'appelle elle meme 
+    public static void creationProduit(Scanner sc, Service service) throws SQLException {
+    	 System.out.println("Nom du produit :");
+         String nom = sc.nextLine();
+         
+     
+         System.out.println("Prix :");
+         float prix = sc.nextFloat();
+         
+         System.out.println("Quantité en stock :");
+         int qtt = sc.nextInt();
+
+         System.out.println("Id de la categorie :");
+         int id_categ = sc.nextInt();
+         sc.nextLine();
+         
+         try {
+			service.ajouterProduit(nom, prix, qtt, id_categ);
+
+		} catch (ChampInvalide e) {
+			System.out.println(e.getMessage());
+			creationProduit(sc, service);
+		}
+    }
+    
+    
+    
+    
+    
+    // Recursivité sur la suppression produit
+    public static void supprProduit(Scanner sc, Service service) throws SQLException {
+    	System.out.println("Identifiant du produit :");
+        int id = sc.nextInt();
+        sc.nextLine();
+        
+        try {
+        	service.supprimerProduit(id);
+        }catch (ChampInvalide e) {
+        	System.out.println(e.getMessage());
+        	supprProduit(sc, service);
+        }
+    	
+    }
+    
+    // Recursivité sur la suppresion categ
+    public static void supprCateg(Scanner sc, Service service) throws SQLException, OperationInvalide, ChampInvalide {
+    	
+    	System.out.println("Identifiant de la categorie :");
+        int id = sc.nextInt();
+        sc.nextLine();
+        
+        
+        try {
+			service.supprimerCategorie(id);
+
+		} catch (ChampInvalide | OperationInvalide e) {
+			System.out.println(e.getMessage());
+			supprCateg(sc, service);
+		}
+   }
 }
 

@@ -2,6 +2,8 @@ package service;
 
 import java.sql.SQLException;
 
+import exception.ChampInvalide;
+import exception.OperationInvalide;
 import model.Categorie;
 import model.Model;
 import model.Produit;
@@ -22,7 +24,7 @@ public class Service {
     
     
     
-    // Exceptions 
+    /*
     
     public static class operationInvalide extends Exception {
         public operationInvalide(String message) {
@@ -37,25 +39,25 @@ public class Service {
             }
      }
         
-    
+    */
     
     // AJOUT PRODUIT
 
     public void ajouterProduit(String nom, float prix, int qtt_stock, int id_categ)
     
-        throws SQLException, champInvalide {
+        throws SQLException, ChampInvalide {
 
 	        if (nom == null) {
-	        	throw new champInvalide("Nom du produit obligatoire");
+	        	throw new ChampInvalide("Nom du produit obligatoire");
 	
 	        }
 	
 	        if (prix <= 0) {
-	        	throw new champInvalide("Le prix doit etre supérieur a 0");
+	        	throw new ChampInvalide("Le prix doit etre supérieur a 0");
 	        }
 	
-	        if (qtt_stock < 0) {
-	        	throw new champInvalide("La quantité de stock doit etre supérieure à 0");
+	        if (qtt_stock <= 0) {
+	        	throw new ChampInvalide("La quantité de stock doit etre supérieure à 0");
 	        }
 
         model.addProduit(nom, prix, qtt_stock, id_categ);
@@ -66,10 +68,10 @@ public class Service {
     
     // AJOUT CATEGORIE
 
-    public void ajouterCategorie(String nom, String description, int id_parent)throws SQLException, champInvalide {
+    public void ajouterCategorie(String nom, String description, int id_parent)throws SQLException, ChampInvalide {
 
         if (nom == null) {
-        	throw new champInvalide("Nom de la categorie   obligatoire");
+        	throw new ChampInvalide("Nom de la categorie obligatoire");
         }
 
         model.addCategorie(nom, description, id_parent);
@@ -82,10 +84,10 @@ public class Service {
     
     // SUPPRESSION PRODUIT
 
-    public void supprimerProduit(int id_produit) throws SQLException, champInvalide {
+    public void supprimerProduit(int id_produit) throws SQLException, ChampInvalide {
 
         if (id_produit <= 0) {
-        	 throw new champInvalide("Identifiant du produit invalide car il ne doit pas etre inférieur ou égal à 0");
+        	 throw new ChampInvalide("Identifiant du produit invalide car il ne doit pas etre inférieur ou égal à 0");
         }
             
 
@@ -95,24 +97,24 @@ public class Service {
     
     // SUPPRESSION CATEGORIE
     
-    public void supprimerCategorie(int id_categ) throws SQLException, champInvalide, operationInvalide {
+    public void supprimerCategorie(int id_categ) throws SQLException, ChampInvalide, OperationInvalide {
 
         if (id_categ <= 0) {
-            throw new champInvalide("Identifiant catégorie invalide car il ne doit pas être inférieur ou égal à 0");
+            throw new ChampInvalide("Identifiant catégorie invalide car il ne doit pas être inférieur ou égal à 0");
         }
         
         
         // verif si sous categ
         for (Categorie c : model.getListCateg()) {
             if (c.getId_parent() == id_categ) {
-               throw new operationInvalide("Impossible de supprimer cette catégorie car elle a des sous-catégories");
+               throw new OperationInvalide("Impossible de supprimer cette catégorie car elle a des sous-catégories");
             }
         }
         
         //verif si la categ a un produit relié 
         for ( Produit p : model.getListProduit()) {
         	if (p.getId_produit() == id_categ) {
-        		throw new operationInvalide("Impossible de supprimer cette catégorie car elle a des produits rattachés");
+        		throw new OperationInvalide("Impossible de supprimer cette catégorie car elle a des produits rattachés");
         	}
         }
 
@@ -130,10 +132,10 @@ public class Service {
     
     // MAJ PRODUIT
 
-    public void modifierProduit(int id_produit, String nom, float prix,int qtt_stock, int id_categ)throws SQLException, champInvalide {
+    public void modifierProduit(int id_produit, String nom, float prix,int qtt_stock, int id_categ)throws SQLException, ChampInvalide {
 
         if (id_produit <= 0) {
-        	throw new champInvalide("Identifiant produit invalide car il ne peut pas etre inférieur ou égal a 0");
+        	throw new ChampInvalide("Identifiant produit invalide car il ne peut pas etre inférieur ou égal a 0");
            
         }
 
@@ -144,10 +146,10 @@ public class Service {
     
     //  MAJ CATEG
 
-    public void modifierCategorie(int id_categ, String nom,String description, Integer id_parent)throws SQLException, champInvalide {
+    public void modifierCategorie(int id_categ, String nom,String description, Integer id_parent)throws SQLException, ChampInvalide {
     	
         if (id_categ <= 0) {
-        	throw new champInvalide("Identifiant categorie invalide car il est inférieur ou égal à 0");
+        	throw new ChampInvalide("Identifiant categorie invalide car il est inférieur ou égal à 0");
             
         }
 
@@ -161,15 +163,15 @@ public class Service {
     
     // LIER DELIER CATEG
     
-    public void lierDelierCategorie(int id_categ, Integer id_parent) throws SQLException, operationInvalide {
+    public void lierDelierCategorie(int id_categ, Integer id_parent) throws SQLException, OperationInvalide {
     	
     	if (id_parent != 0 && id_parent == id_categ ) {
-    		throw new operationInvalide ("Une catégorie ne peut pas etre son propre parent");
+    		throw new OperationInvalide ("Une catégorie ne peut pas etre son propre parent");
     		
     	}
     	
     	if (id_categ <= 1) {
-    		throw new operationInvalide ("L'identifiant de la categorie doit etre supérieur ou égal à 1");
+    		throw new OperationInvalide ("L'identifiant de la categorie doit etre supérieur ou égal à 1");
     		
     	}
     	
@@ -178,7 +180,7 @@ public class Service {
         	
             model.delierCateg(id_categ, id_parent);
             return;
-        }
+        }  
         
         
         model.lierCateg(id_categ, id_parent);
@@ -186,16 +188,16 @@ public class Service {
     
     
     // LIER DELIER PRODUIT
-    public void lierDelierProduit(int id_produit, int id_categ) throws SQLException, operationInvalide {
+    public void lierDelierProduit(int id_produit, int id_categ) throws SQLException, OperationInvalide {
     	
     	if( id_produit <= 1) {
-    		throw new operationInvalide("L'identifiant du produit doit etre supérieur ou égal à 1");
+    		throw new OperationInvalide("L'identifiant du produit doit etre supérieur ou égal à 1");
     		
     	}
     	
     	
     	if(id_categ == 0) {  // relier le produit a aucune categorie = impossible
-    		throw new operationInvalide("L'identifiant de la catégorie liée ne peut pas etre null");
+    		throw new OperationInvalide("L'identifiant de la catégorie liée ne peut pas etre null");
     		
     	}
     	

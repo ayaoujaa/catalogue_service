@@ -39,6 +39,7 @@ public class Categorie {
 
 	// chaine de caractere 
 	public String toString() {
+		
 			return "CATEGORIE [nom=" + nom + ", description=" + description + ", sous-categorie=" + id_parent + "]";
 		}
 }
