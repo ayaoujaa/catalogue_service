@@ -65,6 +65,23 @@ public class Model {
     
     
     
+    // recup id 
+    public void recupId(int id_categ) throws SQLException {
+    	Statement stmt = con.createStatement();
+    	
+    	String sql = "SELECT * FROM categorie WHERE id_categ = " + id_categ;
+    	stmt.execute(sql);
+    	System.out.println("requete id exécutée avec succès !");
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
     //  AJOUT CATEG
 
     public void addCategorie(String nom, String description, int id_parent) throws SQLException {

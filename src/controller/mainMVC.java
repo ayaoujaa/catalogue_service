@@ -282,12 +282,12 @@ public class mainMVC {
         
         
         try {
-			supprimer.supprimerCategorie(id);
+			supprimer.supprimerCategorie(id); 
 
 		} catch (ChampInvalide | OperationInvalide e) {
 			System.out.println(e.getMessage());
 			supprCateg(sc, supprimer);
-		}
+		}	
    }
 }
 
