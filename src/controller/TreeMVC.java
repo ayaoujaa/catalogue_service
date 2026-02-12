@@ -24,8 +24,8 @@ public class TreeMVC {
 		
 		Arborescence arborescence = new Arborescence(model);
 		
-		List<Categorie> listCateg = model.getListCateg();
-	    List<Produit> listProduit = model.getListProduit();
+		//List<Categorie> listCateg = model.getListCateg();
+	   //List<Produit> listProduit = model.getListProduit();
 	    
 	    
 	   
@@ -33,12 +33,12 @@ public class TreeMVC {
 	    
 	    Scanner sc = new Scanner(System.in);
 	    System.out.println("Insérez un identifiant :");
-	    int choixId = sc.nextInt();
+	    int id_categ = sc.nextInt();
+	    sc.nextLine(); 
+	    
 
-	    //Arborescence arbo = new Arborescence(model);
-
-	    // ici on affiche l'arborescence à partir de l'ID choisi
-	    arborescence.afficherDepuisId(choixId);
+	    // arborescence a partir de l'id
+	    arborescence.afficheArborescence(id_categ,"");
 	    
 	    
 	    
