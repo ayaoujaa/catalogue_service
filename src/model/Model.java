@@ -65,14 +65,33 @@ public class Model {
     
     
     
-    // recup id 
-    public void recupId(int id_categ) throws SQLException {
-    	Statement stmt = con.createStatement();
+    
+    
+    //Categ par id
+    public ResultSet categorieId(int id_categ) throws SQLException {
+        Statement stmt = con.createStatement();
+        String sql = "SELECT * FROM categorie WHERE id_categ = " + id_categ;
+        
+        ResultSet categId = stmt.executeQuery(sql);
+		return categId;
     	
-    	String sql = "SELECT * FROM categorie WHERE id_categ = " + id_categ;
-    	stmt.execute(sql);
-    	System.out.println("requete id exécutée avec succès !");
     }
+  //Sous categ
+    public ResultSet sousCategorieId(int id_parent) throws SQLException {
+        Statement stmt = con.createStatement();
+        String sql = "SELECT * FROM categorie WHERE id_parent = " + id_parent;
+        ResultSet sousCategId = stmt.executeQuery(sql);
+    	return sousCategId;
+    }
+    //recup les produits
+    public ResultSet ProduitParCateg(int id_categ) throws SQLException {
+        Statement stmt = con.createStatement();
+        String sql = "SELECT * FROM produit WHERE id_categ = " + id_categ;
+        ResultSet produitC = stmt.executeQuery(sql);
+        return produitC;
+    }
+
+    
     
     
     
