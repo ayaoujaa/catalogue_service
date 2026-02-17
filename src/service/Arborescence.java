@@ -31,7 +31,7 @@ public class Arborescence {
 	 
 	 
 	 
-	 public static void afficheArborescence(int id_categ, String indent) throws ChampInvalide, SQLException {
+	 public static String afficheArborescence(int id_categ, String indent) throws ChampInvalide, SQLException {//static car depend des objets
 
 		    
 		    if (id_categ <= 0) {
@@ -45,15 +45,26 @@ public class Arborescence {
 		    	
 		        throw new ChampInvalide("la catégorie n'existe pas");
 		    }
-
-		    System.out.println(indent + "   |__ C" + recupCateg.getInt("id_categ") + " : " + recupCateg.getString("nom"));
+		    
+		    
+		    
+		    String resultat = "";
+		    resultat += indent + "   |__ C" 
+		            + recupCateg.getInt("id_categ") 
+		            + " : " + recupCateg.getString("nom") + "\n";
+		    
+		    
+		    
+		    //System.out.println(indent + "   |__ C" + recupCateg.getInt("id_categ") + " : " + recupCateg.getString("nom"));
 
 		    
 		    // produit de la categ 
 		    ResultSet recupProd = model.ProduitParCateg(id_categ);
 		    while (recupProd.next()) {
-		    	
-		        System.out.println(indent + "       |__ P" + recupProd.getInt("id_produit") + " : " + recupProd.getString("nom"));
+		    	 resultat += indent + "         |__ P" 
+		    	            + recupProd.getInt("id_produit") 
+		    	            + " : " + recupProd.getString("nom") + "\n";
+		       // System.out.println(indent + "       |__ P" + recupProd.getInt("id_produit") + " : " + recupProd.getString("nom"));
 		        
 		    }
 
@@ -63,10 +74,11 @@ public class Arborescence {
 		    while (recupSousCateg.next()) {
 		    	
 		        int sousCategId = recupSousCateg.getInt("id_categ");
-		        
+		        resultat += afficheArborescence(sousCategId, indent + "    ");
 		        // recursivité 
-		        afficheArborescence(sousCategId, indent + "    ");
+		        //afficheArborescence(sousCategId, indent + "    ");
 		    }
+		    return resultat;
 		}
 
 	

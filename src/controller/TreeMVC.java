@@ -36,9 +36,12 @@ public class TreeMVC {
 	    int id_categ = sc.nextInt();
 	    sc.nextLine(); 
 	    
+	    String affichage = Arborescence.afficheArborescence(id_categ,"");
 
+        System.out.println(affichage);
 	    // arborescence a partir de l'id
-	    arborescence.afficheArborescence(id_categ,"");
+	    //arborescence.afficheArborescence(id_categ,"");
+	    
 	    
 	    
 	    
